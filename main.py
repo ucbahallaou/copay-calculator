@@ -131,35 +131,36 @@ with col1:
                 st.session_state.responsibilities = []
 
 with col2: 
-    # Display the entered CPT codes, modifiers, and responsibilities 
-    if st.session_state.cpt_codes: 
-        input_data = pd.DataFrame({ 
-            'CPT Code': st.session_state.cpt_codes, 
-            'Modifier': st.session_state.modifiers,
-            '% Patient Responsibility': st.session_state.responsibilities 
-        })
+    # Check that all session state lists are of the same length before creating the DataFrame
+    if len(st.session_state.cpt_codes) == len(st.session_state.modifiers) == len(st.session_state.responsibilities):
+        if st.session_state.cpt_codes: 
+            input_data = pd.DataFrame({ 
+                'CPT Code': st.session_state.cpt_codes, 
+                'Modifier': st.session_state.modifiers,
+                '% Patient Responsibility': st.session_state.responsibilities 
+            })
 
-        # Merge the input data with the MDFS data to include 'Non Facility Fee' based on CPT and Modifier 
-        merged_input_data = input_data.merge(data[['CPT', 'Modifier', 'Non Facility Fee']], 
-                                             left_on=['CPT Code', 'Modifier'], 
-                                             right_on=['CPT', 'Modifier'], 
-                                             how='left') 
-        merged_input_data['% pts'] = merged_input_data['% Patient Responsibility'].astype(str) + '%' 
-        merged_input_data.set_index(['CPT Code', 'Modifier'], inplace=True) 
-        st.write(merged_input_data[['% pts', 'Non Facility Fee']]) 
-        
-        # Calculate the total patient responsibility based on selected modifiers
-        merged_data = input_data.merge(data, left_on=['CPT Code', 'Modifier'], right_on=['CPT', 'Modifier'])
-        merged_data['Patient Responsibility'] = (merged_data['% Patient Responsibility'] / 100) * merged_data['Non Facility Fee'] 
-        total_responsibility = merged_data['Patient Responsibility'].sum() 
+            # Merge the input data with the MDFS data to include 'Non Facility Fee' based on CPT and Modifier 
+            merged_input_data = input_data.merge(data[['CPT', 'Modifier', 'Non Facility Fee']], 
+                                                 left_on=['CPT Code', 'Modifier'], 
+                                                 right_on=['CPT', 'Modifier'], 
+                                                 how='left') 
+            merged_input_data['% pts'] = merged_input_data['% Patient Responsibility'].astype(str) + '%' 
+            merged_input_data.set_index(['CPT Code', 'Modifier'], inplace=True) 
+            st.write(merged_input_data[['% pts', 'Non Facility Fee']]) 
+            
+            # Calculate the total patient responsibility based on selected modifiers
+            merged_data = input_data.merge(data, left_on=['CPT Code', 'Modifier'], right_on=['CPT', 'Modifier'])
+            merged_data['Patient Responsibility'] = (merged_data['% Patient Responsibility'] / 100) * merged_data['Non Facility Fee'] 
+            total_responsibility = merged_data['Patient Responsibility'].sum() 
 
-        if st.button('Calculate Total Responsibility'): 
-            st.write(f'### Total Patient Responsibility: ${total_responsibility:.2f}') 
+            if st.button('Calculate Total Responsibility'): 
+                st.write(f'### Total Patient Responsibility: ${total_responsibility:.2f}') 
           
-if st.session_state.cpt_codes: 
-    # Display the MDFS data for the entered CPT codes and selected modifiers
-    merged_data = input_data.merge(data, left_on=['CPT Code', 'Modifier'], right_on=['CPT', 'Modifier']) 
-    merged_data.set_index(['CPT Code', 'Modifier'], inplace=True) 
-    st.write('### MDFS Data:') 
-    st.write(merged_data) 
+        # Display the MDFS data for the entered CPT codes and selected modifiers
+        merged_data = input_data.merge(data, left_on=['CPT Code', 'Modifier'], right_on=['CPT', 'Modifier']) 
+        merged_data.set_index(['CPT Code', 'Modifier'], inplace=True) 
+        st.write('### MDFS Data:') 
+        st.write(merged_data) 
+
 
