@@ -92,7 +92,7 @@ import pandas as pd
 # Load the CSV file into a DataFrame
 @st.cache_data
 def load_data():
-    return pd.read_csv('/mnt/data/MDFS.csv')
+    return pd.read_csv('MDFS.csv')
 
 data = load_data()
 
