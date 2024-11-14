@@ -1,6 +1,6 @@
 # Patient Co-Pay Responsibility Calculator
 
-This is a **Patient Responsibility Calculator** designed to help healthcare providers quickly calculate patient responsibility for specific services based on CPT codes and modifiers. The tool pulls fee data from the Medicare Fee Schedule (MDFS) to provide an accurate co-pay calculation based on the patient's responsibility percentage.
+This is a **Patient Responsibility Calculator** designed to help healthcare staff quickly calculate patient responsibility for specific services based on CPT codes and modifiers. The tool pulls fee data from the Medicare Fee Schedule (MDFS) from cms.gov to provide an accurate co-pay calculation based on the patient's responsibility percentage.
 
 ## Features
 - Autocomplete functionality for easy CPT code selection.
