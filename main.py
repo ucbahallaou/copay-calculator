@@ -119,7 +119,7 @@ else:
 
     with st.expander("How to use this tool"):
         st.write("""
-            1. Start typing the CPT code, and select from the suggested options.
+            1. Select the CPT code from the dropdown.
             2. Select the appropriate modifier, if available. Default is 'No Modifier'.
             3. Enter the patient's responsibility percentage in the 'Enter % Patient Responsibility' field.
             4. Click 'Add CPT Code' to add the CPT code, modifier, and responsibility to the list.
@@ -130,14 +130,12 @@ else:
     # Layout the app with input fields on the left and data on the right
     col1, col2 = st.columns(2)
     with col1:
-        # Dynamic autocomplete for CPT code
+        # Single selectbox for CPT code selection with autocomplete
         all_cpt_codes = data['CPT'].astype(str).unique().tolist()
-        typed_cpt_code = st.text_input('Start typing CPT Code')
-        filtered_cpt_codes = [code for code in all_cpt_codes if typed_cpt_code in code]
-        cpt_code = st.selectbox('Select CPT Code', filtered_cpt_codes) if filtered_cpt_codes else None
+        cpt_code = st.selectbox('Select CPT Code', all_cpt_codes)
 
         # Get unique modifiers for the selected CPT code
-        modifiers = data[data['CPT'] == cpt_code]['Modifier'].unique().tolist() if cpt_code in data['CPT'].values else []
+        modifiers = data[data['CPT'] == cpt_code]['Modifier'].unique().tolist()
         modifiers.insert(0, 'No Modifier')  # Add a 'No Modifier' option by default
         modifier = st.selectbox('Select Modifier', modifiers)
 
